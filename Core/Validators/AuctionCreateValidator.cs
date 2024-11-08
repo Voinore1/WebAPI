@@ -80,7 +80,7 @@ public class AuctionCreateValidator : AbstractValidator<AuctionCreateModel>
 
     private static bool BeAValidImage(IFormFile file)
     {
-        if (file == null || file.Length == 0)
+        if (file == null)
         {
             Console.WriteLine("File is null or empty.");
             return false;
