@@ -77,6 +77,7 @@ namespace Core.MapperProfiles
                                                   .ForMember(dest => dest.TransmissionId, opt => opt.MapFrom(src => src.Venichle.TransmissionId));
 
             CreateMap<RegisterModel, User>().ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+                                            
         }
     }
 

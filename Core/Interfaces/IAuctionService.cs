@@ -11,5 +11,8 @@ namespace Core.Interfaces
     {
         List<AuctionShortModel> GetAllAuctions();
         AuctionFullModel GetAuctionById(int id);
+        void CreateAuction(AuctionCreateModel model);
+        void EditAuction(AuctionFullModel model);
+        void DeleteAuction(int id);
     }
 }

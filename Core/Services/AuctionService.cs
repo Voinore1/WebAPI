@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Core.Exceptions;
 using Core.Interfaces;
 using Core.Models;
 using Data;
+using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,11 +27,41 @@ namespace Core.Services
         {
             var auctionEntity = context.Auctions.Include(x => x.Seller).Include(x => x.Venichle).FirstOrDefault(x => x.Id == id);
 
-            if (auctionEntity == null) throw new Exception($"Auction with id {id} not found");
+            if (auctionEntity == null) throw new HttpException($"Auction with id {id} not found", HttpStatusCode.NotFound);
 
             var auction = mapper.Map<AuctionFullModel>(auctionEntity);
 
             return auction;
+        }
+
+        public void CreateAuction(AuctionCreateModel model)
+        {
+            var auction = mapper.Map<Auction>(model);
+
+            context.Auctions.Add(auction);
+            context.SaveChanges();
+        }
+
+        public void EditAuction(AuctionFullModel model)
+        {
+            var auction = context.Auctions.Include(x => x.Venichle).FirstOrDefault(x => x.Id == model.Id);
+
+            if (auction == null) throw new HttpException($"Auction with id {model.Id} not found", HttpStatusCode.NotFound);
+
+            auction = mapper.Map<Auction>(model);
+
+            context.SaveChanges();
+        }
+
+        public void DeleteAuction(int id)
+        {
+            var auction = context.Auctions.Include(x => x.Venichle).FirstOrDefault(x => x.Id == id);
+
+            if (auction == null) throw new HttpException($"Auction with id {id} not found", HttpStatusCode.NotFound);
+
+            context.Venichles.Remove(auction.Venichle);
+            context.Auctions.Remove(auction);
+            context.SaveChanges();
         }
     }
 }

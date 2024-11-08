@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Core.Exceptions;
+using System.Net;
 
 namespace WebAPI
 {
@@ -16,6 +17,10 @@ namespace WebAPI
             try
             {
                 await _next(context);
+            }
+            catch (HttpException ex)
+            {
+                await HandleExceptionAsync(context, ex.Message, ex.StatusCode);
             }
             catch (Exception ex)
             {

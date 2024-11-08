@@ -5,6 +5,7 @@ using Data;
 using Data.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebAPI;
 using WebApplication1.Services;
@@ -23,7 +24,7 @@ builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssembli
 
 builder.Services.AddDbContext<AuctionDBContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDb"));
+    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Cars&BidsDB;Integrated Security=True;");
 });
 
 builder.Services.AddAutoMapper(typeof(AppProfile));
@@ -31,9 +32,11 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
-builder.Services.AddIdentityCore<User>(opt => 
-                                       opt.SignIn.RequireConfirmedAccount = false).
-                                       AddEntityFrameworkStores<AuctionDBContext>();
+builder.Services.AddDefaultIdentity<User>(opt => 
+                                       opt.SignIn.RequireConfirmedAccount = false)
+                                       .AddDefaultTokenProviders()
+                                       .AddSignInManager()
+                                       .AddEntityFrameworkStores<AuctionDBContext>();
 
 var app = builder.Build();
 

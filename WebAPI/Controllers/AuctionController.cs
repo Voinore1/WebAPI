@@ -6,6 +6,7 @@ using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebAPI.Controllers
 {
@@ -31,49 +32,28 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create([FromForm] AuctionCreateModel model) // create new auction
         {
-            if (!ModelState.IsValid) return BadRequest();
+            auctionService.CreateAuction(model);
 
-            var auction = mapper.Map<Auction>(model);
-
-            context.Auctions.Add(auction);
-            context.SaveChanges();
             return Ok();
         }
 
         [HttpPut]
+        [Authorize]
         public IActionResult Edit([FromBody] AuctionFullModel model) // Edit auction
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            var auction = context.Auctions
-                .Include(a => a.Venichle)
-                .FirstOrDefault(a => a.Id == model.Id);
-
-            if (auction == null)
-            {
-                return NotFound(); 
-            }
-
-            mapper.Map(model, auction);
-
-            context.SaveChanges();
-
+            auctionService.EditAuction(model);
             return Ok();
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete([FromRoute]int id) // delete auction by id
         {
-            var auction = context.Auctions.Include(x => x.Venichle).Where(x => x.Id == id).First();
-            if (auction == null) return NotFound($"Auction with id {id} not found.");
-
-            context.Venichles.Remove(auction.Venichle);
-            context.Auctions.Remove(auction);
-            context.SaveChanges();
-
-            return Ok("");
+            auctionService.DeleteAuction(id);
+            return Ok();
         }
 
     }
