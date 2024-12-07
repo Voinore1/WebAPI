@@ -22,6 +22,7 @@ namespace Core.Models
         public int CurrentPrice { get; set; }
         public bool IsSold { get; set; }
         public string CityNow { get; set; }
+        public string MainPhotoURL { get; set; }
 
 
         public string SellerUserName { get; set; }
