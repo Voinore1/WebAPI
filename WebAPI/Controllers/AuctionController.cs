@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace WebAPI.Controllers
 {
@@ -41,7 +42,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public IActionResult Edit([FromBody] AuctionFullModel model) // Edit auction
         {
             auctionService.EditAuction(model);

@@ -20,7 +20,10 @@ namespace WebAPI
             }
             catch (HttpException ex)
             {
-                await HandleExceptionAsync(context, ex.Message, ex.StatusCode);
+                if (ex.Message != "Sequence contains no elements")
+                {
+                    await HandleExceptionAsync(context, ex.Message, ex.StatusCode);
+                }
             }
             catch (Exception ex)
             {

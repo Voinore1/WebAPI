@@ -12,15 +12,13 @@ namespace WebAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            await accountservice.Register(model);
-            return Ok();
+            return Ok(await accountservice.Register(model));
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
-        {
-            await accountservice.Login(model);
-            return Ok();
+        { 
+            return Ok(await accountservice.Login(model));
         }
 
         [HttpPost("logout")]

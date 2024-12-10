@@ -1,12 +1,16 @@
 using Core.Interfaces;
 using Core.MapperProfiles;
+using Core.Models;
 using Core.Services;
 using Data;
 using Data.Entities;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using WebAPI;
 using WebApplication1.Services;
 
@@ -31,6 +35,10 @@ builder.Services.AddAutoMapper(typeof(AppProfile));
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IAuctionService, AuctionService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
+
+var jwtOpts = builder.Configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>();
+builder.Services.AddSingleton( _ => jwtOpts!);
 
 builder.Services.AddDefaultIdentity<User>(opt => 
                                        opt.SignIn.RequireConfirmedAccount = false)
@@ -45,6 +53,24 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader()
                           .AllowAnyMethod());
 });
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtOpts.Issuer,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpts.Key)),
+                        ClockSkew = TimeSpan.Zero
+                    };
+                }
+                );
+
 
 var app = builder.Build();
 

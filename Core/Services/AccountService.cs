@@ -11,9 +11,10 @@ namespace Core.Services
 {
     public class AccountService(IMapper mapper,
                                 UserManager<User> userManager,
-                                SignInManager<User> signInManager) : IAccountService
+                                SignInManager<User> signInManager,
+                                IJwtService jwtService) : IAccountService
     {
-        public async Task Register(RegisterModel model)
+        public async Task<LoginResponce> Register(RegisterModel model)
         {
             var user = mapper.Map<User>(model);
 
@@ -22,9 +23,13 @@ namespace Core.Services
 
 
             if (!result.Succeeded) throw new HttpException(res.Description, HttpStatusCode.BadRequest);
+
+            user = await userManager.FindByEmailAsync(user.Email);
+
+            return new LoginResponce() { AccessToken = jwtService.CreateToken(jwtService.GetClaims(user))};
         }
 
-        public async Task Login(LoginModel model)
+        public async Task<LoginResponce> Login(LoginModel model)
         {
 
             var user = await userManager.FindByEmailAsync(model.Username);
@@ -34,10 +39,14 @@ namespace Core.Services
             if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
             {
                 throw new HttpException("Invalid login or password", HttpStatusCode.NotFound);
-            }   
+            }
 
-            await signInManager.SignInAsync(user, true);
+            //await signInManager.SignInAsync(user, true);
 
+            return new LoginResponce()
+            {
+                AccessToken = jwtService.CreateToken(jwtService.GetClaims(user))
+            };
 
         }
 
