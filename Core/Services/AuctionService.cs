@@ -4,7 +4,9 @@ using Core.Interfaces;
 using Core.Models;
 using Data;
 using Data.Entities;
+using Data.Entities.VenichleInfo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +64,41 @@ namespace Core.Services
             context.Venichles.Remove(auction.Venichle);
             context.Auctions.Remove(auction);
             context.SaveChanges();
+        }
+
+        public List<BrandModel> GetAllBrands()
+        {
+            var brands = mapper.Map<List<BrandModel>>(context.Brands.ToList());
+
+            return brands;
+        }
+
+        public List<FuelTypeModel> GetAllFuelTypes()
+        {
+            var fuelTypes = mapper.Map<List<FuelTypeModel>>(context.FuelTypes.ToList());
+
+            return fuelTypes;
+        }
+
+        public List<TransmissionModel> GetAllTransmissions()
+        {
+            var transmissions = mapper.Map<List<TransmissionModel>>(context.Transmissions.ToList());
+
+            return transmissions;
+        }
+
+        public List<BodyStyleModel> GetAllBodyStyles()
+        {
+            var bodyStyles = mapper.Map<List<BodyStyleModel>>(context.BodyStyles.ToList());
+
+            return bodyStyles;
+        }
+
+        public List<CarModelModel> GetAllCarsModel(int id)
+        {
+            var carModels = mapper.Map<List<CarModelModel>>(context.Models.Where(x => x.BrandId == id).ToList());
+
+            return carModels;
         }
     }
 }

@@ -57,5 +57,35 @@ namespace WebAPI.Controllers
             return Ok();
         }
 
+        [HttpGet("brands")]
+        public IActionResult GetAllBrands()
+        {
+            return Ok(auctionService.GetAllBrands());
+        }
+
+        [HttpGet("models/{id}")]
+        public IActionResult GetAllModels([FromRoute] int id)
+        {
+            return Ok(auctionService.GetAllCarsModel(id));
+        }
+
+        [HttpGet("transmissions")]
+        public IActionResult GetAllTransmissions()
+        {
+            return Ok(auctionService.GetAllTransmissions());
+        }
+
+        [HttpGet("fueltypes")]
+        public IActionResult GetAllFuelTypes()
+        {
+            return Ok(auctionService.GetAllFuelTypes());
+        }
+
+        [HttpGet("bodystyles")]
+        public IActionResult GetAllBodyStyles()
+        {
+            return Ok(auctionService.GetAllBodyStyles());
+        }
+
     }
 }

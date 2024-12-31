@@ -77,7 +77,11 @@ namespace Core.MapperProfiles
                                                   .ForMember(dest => dest.TransmissionId, opt => opt.MapFrom(src => src.Venichle.TransmissionId));
 
             CreateMap<RegisterModel, User>().ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
-                                            
+            CreateMap<Brand, BrandModel>();
+            CreateMap<Model, CarModelModel>();
+            CreateMap<FuelType, FuelTypeModel>();
+            CreateMap<BodyStyle, BodyStyleModel>();
+            CreateMap<Transmission, TransmissionModel>();
         }
     }
 
